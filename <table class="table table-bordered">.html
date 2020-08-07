@@ -1,0 +1,122 @@
+<html>
+    <head>
+        <title>BJ</title>
+        <meta charset="utf-8">
+        <meta name="author" content= "Jorge Ugarte O">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <style>
+            body {font-family: -apple-system,  BlinkMacSystemFont, sans-serif;}
+            p, h1, h3 {text-align: center;}
+        </style>
+        <script>
+            $(document).on('click', '.btn_remove', function (event) {
+            event.preventDefault();
+            $(this).closest('tr').remove();
+            $("#adicionados").text("");
+            var nFilas = $("#mytable tr").length;
+            $("#adicionados").append(nFilas - 1);
+            var ji = (nFilas - 1);
+            var nm = ji / 6;
+            var jm = ji / (Math.ceil(nm)) ;
+            var ronda = ji / 60 ;
+            document.getElementById("output1").innerHTML = "Mesas a ocupar: " + (Math.ceil(nm));
+            document.getElementById("output3").innerHTML = "Rondas: " + (Math.ceil(ronda));
+            document.getElementById("output2").innerHTML = "Jugadores por mesa: ≈ " + (Math.trunc(jm));
+            document.getElementById("adicionados").innerHTML = "Jugadores inscritos: " + ji;
+            });
+
+            $(document).ready(function() {  //obtenemos el valor de los input
+            $('#adicionar').click(function() {
+            var nombre = document.getElementById("nombre").value;
+            var apellido = document.getElementById("apellido").value;
+            var cedula = document.getElementById("cedula").value;
+            var i = 1; //contador para asignar id al boton que borrara la fila
+            var fila = '<tr id="row' + i + '"><td>' + nombre + '</td><td>' + apellido + '</td><td>' + cedula + '</td><td><button type="button" name="remove" id="' + i + '" class="btn btn-danger btn_remove">Quitar</button></td></tr>'; //esto seria lo que contendria la fila
+            i++;
+            $('#mytable tr:first').after(fila);
+            $("#adicionados").text(""); //esta instruccion limpia el div adicionados para que no se vayan acumulando
+            var nFilas = $("#mytable tr").length;
+            $("#adicionados").append(nFilas - 1); //se resta 1 para no contar la fila del header
+            var ji = (nFilas - 1);
+            var nm = ji / 6;
+            var jm = ji / (Math.ceil(nm)) ;
+            var ronda = ji / 60 ;
+            document.getElementById("output1").innerHTML = "Mesas a ocupar: " + (Math.ceil(nm));
+            document.getElementById("output3").innerHTML = "Rondas: " + (Math.ceil(ronda));
+            document.getElementById("output2").innerHTML = "Jugadores por mesa: ≈ " + (Math.trunc(jm));
+            document.getElementById("adicionados").innerHTML = "Jugadores inscritos: " + ji;
+            document.getElementById("apellido").value ="";
+            document.getElementById("cedula").value = "";
+            document.getElementById("nombre").value = "";
+            document.getElementById("nombre").focus();
+            }); });
+
+            function nextFocus(inputF, inputS)    {
+            document.getElementById(inputF).addEventListener('keydown', function(event) {
+                if (event.keyCode == 13) {
+                    document.getElementById(inputS).focus();}
+            });}
+
+            $(function(){
+            $("#crear").on("click",function(){  // debe leer los valores luego del click no antes!
+            var nFilas = $("#mytable tr").length;
+            $("#adicionados").append(nFilas - 1);
+            var ji = (nFilas - 1);
+            let columna = ji; // hacemos un cast a entero
+            var col = Math.ceil(columna / 6);
+            var fila = Math.ceil(columna / (Math.ceil(col))); //jugadores por meas (filas)
+            let resultado = '<table style="width:100%">';
+            let tabla= $("#tabla");
+            if(!fila || !col){
+            return; // evitamos que se ejecute si es 0 o undefined
+                }
+            for (let i = 1; i <= fila; i++){
+                resultado+="<tr>";
+            for (let x = 1; x <= col; x++){
+                resultado+=`<td>${x}</td>`;}
+                resultado+="</tr>";}
+                tabla.html(resultado + "</table>");
+            });})
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid">
+        <h1>Tabla Distribución "BJ"</h1>
+        <div class="container">
+            <form>
+                <div class="form-group">
+                        <label>Ingrese Nombre:</label> <br>
+                        <input id="nombre" class="form-control" type="text" placeholder="Nombre..."onkeypress="nextFocus('nombre', 'apellido')"><br>
+                        <label>Ingrese Apellido:</label> <br>
+                        <input id="apellido" class="form-control" type="text" placeholder="Apellido..."onkeypress="nextFocus('apellido', 'cedula')"><br>
+                        <label>Ingrese ID:</label> <br>
+                        <input id="cedula" class="form-control" type="text" placeholder="ID..."onkeypress="nextFocus('cedula', 'adicionar')"><br>                
+                        <button id="adicionar" class="btn btn-success" type="button">Inscribir en el Torneo</button>
+                </div>
+            </form>
+        <p id="adicionados"></p>
+        <p id="output1"></p>
+        <p id="output2" data-toggle="popover" data-placement="right" title="Corresponde al número menor de jugadores por mesa, podrá haber mesas con este valor + 1, es decir, si hay 16 jugadores: 2 mesas tendrán 5 jugadores y una mesa tendrá 6."></p>
+        <p id="output3"></p>
+            <table id="mytable" class="table table-bordered table-hover table-striped">
+                <h3>LISTADO JUGADORES INSCRITOS</h3> 
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>ID</th>
+                    <th>Eliminar</th>
+                </tr>
+            </table>
+            <h3>CREAR MATRIZ</h3>
+      
+            <button type="button" id="crear"class="btn btn-success">Crear</button>
+        <br>
+        <table FRAME="void" RULES="cols" id="tabla" class="table table-bordered table table-dark table-striped"></table>
+    </div>
+    </div>
+    </body>
+</html>
