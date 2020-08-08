@@ -13,7 +13,7 @@
             p, h1, h3 {text-align: center;}
         </style>
         <script>
-            $(document).on('click', '.btn_remove', function (event) {
+            $(document).on('click', '.btn_remove', function (event) {   //borrar participante
             event.preventDefault();
             $(this).closest('tr').remove();
             $("#adicionados").text("");
@@ -29,7 +29,7 @@
             document.getElementById("adicionados").innerHTML = "Jugadores inscritos: " + ji;
             });
 
-            $(document).ready(function() {  //obtenemos el valor de los input
+            $(document).ready(function() {  //ingreso jugadores
             $('#adicionar').click(function() {
             var nombre = document.getElementById("nombre").value;
             var apellido = document.getElementById("apellido").value;
@@ -55,31 +55,34 @@
             document.getElementById("nombre").focus();
             }); });
 
-            function nextFocus(inputF, inputS)    {
+            function nextFocus(inputF, inputS)    { //cuando presionas enter, te dirige al siguiente input
             document.getElementById(inputF).addEventListener('keydown', function(event) {
                 if (event.keyCode == 13) {
                     document.getElementById(inputS).focus();}
             });}
 
-            $(function(){
+            $(function(){   //crear tabla segun número de mesas
             $("#crear").on("click",function(){  // debe leer los valores luego del click no antes!
             var nFilas = $("#mytable tr").length;
-            $("#adicionados").append(nFilas - 1);
-            var ji = (nFilas - 1);
-            let columna = ji; // hacemos un cast a entero
+            $("#adicionados2").append(nFilas - 1);
+            var cedula = document.getElementById("cedula").value;
+            var jit = (nFilas - 1);
+            let columna = jit;  //cantidad de jugadores inscritos
             var col = Math.ceil(columna / 6);
-            var fila = Math.ceil(columna / (Math.ceil(col))); //jugadores por meas (filas)
+            var fila = Math.ceil(columna / (Math.ceil(col)));   //jugadores por mesas (filas)
             let resultado = '<table style="width:100%">';
             let tabla= $("#tabla");
             if(!fila || !col){
             return; // evitamos que se ejecute si es 0 o undefined
                 }
-            for (let i = 1; i <= fila; i++){
+            for (let i = 1;
+            i <= fila; i++){
                 resultado+="<tr>";
             for (let x = 1; x <= col; x++){
-                resultado+=`<td>${x}</td>`;}
+                resultado+=`<td>${x}.${i}</td>`;}
                 resultado+="</tr>";}
                 tabla.html(resultado + "</table>");
+                document.getElementById("cedula").value = "";
             });})
         </script>
     </head>
@@ -111,9 +114,8 @@
                     <th>Eliminar</th>
                 </tr>
             </table>
-            <h3>CREAR MATRIZ</h3>
-      
-            <button type="button" id="crear"class="btn btn-success">Crear</button>
+            <h3>DISTRIBUCIÓN MESAS</h3>
+            <button type="button" id="crear"class="btn btn-primary btn-block">Crear</button>
         <br>
         <table FRAME="void" RULES="cols" id="tabla" class="table table-bordered table table-dark table-striped"></table>
     </div>
